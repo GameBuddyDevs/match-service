@@ -11,7 +11,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        default_schema: schauth
+        default_schema: schmatch
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 

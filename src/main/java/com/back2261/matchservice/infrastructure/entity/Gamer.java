@@ -32,7 +32,7 @@ public class Gamer implements UserDetails {
 
     private Integer age;
     private String country;
-    private byte[] avatar;
+    private String avatar;
 
     @UpdateTimestamp
     private Date lastModifiedDate;
@@ -41,7 +41,6 @@ public class Gamer implements UserDetails {
 
     private String pwd;
     private String gender;
-    private Boolean isBlocked = false;
 
     @ManyToMany
     @JoinTable(
@@ -58,6 +57,20 @@ public class Gamer implements UserDetails {
             joinColumns = @JoinColumn(name = "gamer_id"),
             inverseJoinColumns = @JoinColumn(name = "game_id"))
     private Set<Games> likedgames;
+
+    @ManyToMany
+    @JoinTable(
+            name = "approved_matches",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "matched_id"))
+    private Set<Gamer> approvedMatches;
+
+    @ManyToMany
+    @JoinTable(
+            name = "declined_matches",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "declined_id"))
+    private Set<Gamer> declinedMatches;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
