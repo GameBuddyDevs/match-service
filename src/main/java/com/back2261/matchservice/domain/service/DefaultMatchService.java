@@ -1,8 +1,10 @@
 package com.back2261.matchservice.domain.service;
 
+import com.back2261.matchservice.infrastructure.entity.Achievements;
 import com.back2261.matchservice.infrastructure.entity.Gamer;
 import com.back2261.matchservice.infrastructure.entity.Games;
 import com.back2261.matchservice.infrastructure.entity.Keywords;
+import com.back2261.matchservice.infrastructure.repository.AchievementsRepository;
 import com.back2261.matchservice.infrastructure.repository.GamerRepository;
 import com.back2261.matchservice.interfaces.dto.GamerDto;
 import com.back2261.matchservice.interfaces.dto.GamesDto;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +33,7 @@ public class DefaultMatchService implements MatchService {
     private final PredictFeignService predictFeignService;
     private final JwtService jwtService;
     private final GamerRepository gamerRepository;
+    private final AchievementsRepository achievementsRepository;
 
     @Override
     public RecommendationResponse getRecommendations(String token) {
@@ -47,19 +51,13 @@ public class DefaultMatchService implements MatchService {
             recUsers.remove(declinedGamer.getUserId());
         }
 
-        List<Gamer> recommendedGamers = new ArrayList<>();
         List<GamerDto> recommendedGamersDto = new ArrayList<>();
         for (String recUser : recUsers) {
-            recommendedGamers.add(gamerRepository.findById(recUser).get());
-        }
-        for (Gamer recGamer : recommendedGamers) {
+            Gamer recGamer = gamerRepository
+                    .findById(recUser)
+                    .orElseThrow(() -> new BusinessException(TransactionCode.USER_NOT_FOUND));
             GamerDto gamerDto = new GamerDto();
-            gamerDto.setUserId(recGamer.getUserId());
-            gamerDto.setAge(recGamer.getAge());
-            gamerDto.setCountry(recGamer.getCountry());
-            gamerDto.setGender(recGamer.getGender());
-            gamerDto.setAvatar(recGamer.getAvatar());
-            gamerDto.setUsername(recGamer.getGamerUsername());
+            BeanUtils.copyProperties(recGamer, gamerDto);
             List<GamesDto> favoriteGames = mapGames(recGamer.getLikedgames());
             gamerDto.setFavoriteGames(favoriteGames);
             List<String> keywords = mapKeywords(recGamer.getKeywords());
@@ -71,6 +69,7 @@ public class DefaultMatchService implements MatchService {
         RecommendationResponseBody body = new RecommendationResponseBody();
         body.setRecommendedGamers(recommendedGamersDto);
         response.setBody(new BaseBody<>(body));
+        response.setStatus(new Status(TransactionCode.DEFAULT_100));
         return response;
     }
 
@@ -85,6 +84,13 @@ public class DefaultMatchService implements MatchService {
                 .findById(userId)
                 .orElseThrow(() -> new BusinessException(TransactionCode.USER_NOT_FOUND));
         gamer.getApprovedMatches().add(gamerToAccept);
+        if (gamer.getApprovedMatches().size() == 3) {
+            Achievements achievements = achievementsRepository
+                    .findByAchievementName("Talkative Person!!!")
+                    .orElseThrow(() -> new BusinessException(TransactionCode.ACHIEVEMENT_NOT_FOUND));
+            gamer.getGamerEarnedAchievements().add(achievements);
+            // TODO: Send notification to user
+        }
         gamerRepository.save(gamer);
         DefaultMessageResponse response = new DefaultMessageResponse();
         DefaultMessageBody body = new DefaultMessageBody("Gamer accepted");
@@ -113,7 +119,7 @@ public class DefaultMatchService implements MatchService {
     }
 
     private List<String> doFeignPredict(String userId) {
-        List<String> recUsers = null;
+        List<String> recUsers;
         try {
             recUsers = predictFeignService.predict(userId).getSim_users();
         } catch (FeignException e) {

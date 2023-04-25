@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "gamer", schema = "schauth")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Gamer implements UserDetails {
     @Id
@@ -57,6 +55,13 @@ public class Gamer implements UserDetails {
             joinColumns = @JoinColumn(name = "gamer_id"),
             inverseJoinColumns = @JoinColumn(name = "game_id"))
     private Set<Games> likedgames;
+
+    @ManyToMany
+    @JoinTable(
+            name = "gamer_earned_achievements",
+            joinColumns = @JoinColumn(name = "gamer_id"),
+            inverseJoinColumns = @JoinColumn(name = "achievement_id"))
+    private Set<Achievements> gamerEarnedAchievements;
 
     @ManyToMany
     @JoinTable(

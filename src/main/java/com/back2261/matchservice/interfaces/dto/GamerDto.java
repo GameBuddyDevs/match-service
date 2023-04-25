@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class GamerDto {
     private String userId;
-    private String username;
+    private String gamerUsername;
     private Integer age;
     private String country;
     private String gender;
