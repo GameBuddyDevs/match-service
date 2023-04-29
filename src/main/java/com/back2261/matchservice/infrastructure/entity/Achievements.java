@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "achievements")
+@Table(name = "achievements", schema = "schappl")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class GamesDto {
     private String gameName;
-    private byte[] gameIcon;
+    private String gameIcon;
 }

@@ -1,10 +1,7 @@
 package com.back2261.matchservice.infrastructure.entity;
 
 import jakarta.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +27,7 @@ public class Gamer implements UserDetails {
 
     private Integer age;
     private String country;
-    private String avatar;
+    private UUID avatar;
 
     @UpdateTimestamp
     private Date lastModifiedDate;
@@ -59,6 +56,7 @@ public class Gamer implements UserDetails {
     @ManyToMany
     @JoinTable(
             name = "gamer_earned_achievements",
+            schema = "schappl",
             joinColumns = @JoinColumn(name = "gamer_id"),
             inverseJoinColumns = @JoinColumn(name = "achievement_id"))
     private Set<Achievements> gamerEarnedAchievements;

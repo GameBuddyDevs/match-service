@@ -257,7 +257,7 @@ class DefaultMatchServiceTest {
         gamer.setEmail("test");
         gamer.setAge(15);
         gamer.setCountry("test");
-        gamer.setAvatar("test");
+        gamer.setAvatar(UUID.randomUUID());
         gamer.setLastModifiedDate(new Date());
         gamer.setPwd("test");
         gamer.setGender("E");
