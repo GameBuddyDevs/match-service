@@ -23,6 +23,8 @@ springdoc:
 
 predict-service:
   url: http://l2.eren.wtf:4566
+notification-service:
+  url: http://l2.eren.wtf:4564
 
 feign:
   client:

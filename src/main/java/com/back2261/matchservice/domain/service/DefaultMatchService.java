@@ -10,6 +10,7 @@ import com.back2261.matchservice.interfaces.dto.GamerDto;
 import com.back2261.matchservice.interfaces.dto.GamesDto;
 import com.back2261.matchservice.interfaces.dto.RecommendationResponseBody;
 import com.back2261.matchservice.interfaces.request.GamerRequest;
+import com.back2261.matchservice.interfaces.request.SendNotificationTokenRequest;
 import com.back2261.matchservice.interfaces.response.RecommendationResponse;
 import feign.FeignException;
 import io.github.GameBuddyDevs.backendlibrary.base.BaseBody;
@@ -19,6 +20,7 @@ import io.github.GameBuddyDevs.backendlibrary.exception.BusinessException;
 import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageBody;
 import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageResponse;
 import io.github.GameBuddyDevs.backendlibrary.service.JwtService;
+import io.github.GameBuddyDevs.backendlibrary.util.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +36,7 @@ public class DefaultMatchService implements MatchService {
     private final JwtService jwtService;
     private final GamerRepository gamerRepository;
     private final AchievementsRepository achievementsRepository;
+    private final NotificationService notificationService;
 
     @Override
     public RecommendationResponse getRecommendations(String token) {
@@ -89,7 +92,15 @@ public class DefaultMatchService implements MatchService {
                     .findByAchievementName("Talkative Person!!!")
                     .orElseThrow(() -> new BusinessException(TransactionCode.ACHIEVEMENT_NOT_FOUND));
             gamer.getGamerEarnedAchievements().add(achievements);
-            // TODO: Send notification to user
+            SendNotificationTokenRequest tokenRequest = new SendNotificationTokenRequest();
+            tokenRequest.setToken(gamer.getFcmToken());
+            tokenRequest.setTitle(Constants.ACHIEVEMENT_TITLE);
+            tokenRequest.setBody(String.format(Constants.ACHIEVEMENT_BODY, achievements.getAchievementName()));
+            try {
+                notificationService.sendToToken(tokenRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         gamerRepository.save(gamer);
         DefaultMessageResponse response = new DefaultMessageResponse();

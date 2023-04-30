@@ -32,10 +32,9 @@ public class Gamer implements UserDetails {
     @UpdateTimestamp
     private Date lastModifiedDate;
 
-    private Date lastOnlineDate;
-
     private String pwd;
     private String gender;
+    private String fcmToken;
 
     @ManyToMany
     @JoinTable(
