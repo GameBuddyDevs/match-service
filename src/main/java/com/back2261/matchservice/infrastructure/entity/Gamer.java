@@ -34,6 +34,8 @@ public class Gamer implements UserDetails {
 
     private String pwd;
     private String gender;
+    private Boolean isBlocked;
+    private Boolean isRegistered;
     private String fcmToken;
 
     @ManyToMany

@@ -2,11 +2,9 @@ package com.back2261.matchservice.domain.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.back2261.matchservice.infrastructure.entity.Achievements;
-import com.back2261.matchservice.infrastructure.entity.Gamer;
-import com.back2261.matchservice.infrastructure.entity.Games;
-import com.back2261.matchservice.infrastructure.entity.Keywords;
+import com.back2261.matchservice.infrastructure.entity.*;
 import com.back2261.matchservice.infrastructure.repository.AchievementsRepository;
+import com.back2261.matchservice.infrastructure.repository.AvatarsRepository;
 import com.back2261.matchservice.infrastructure.repository.GamerRepository;
 import com.back2261.matchservice.interfaces.request.GamerRequest;
 import com.back2261.matchservice.interfaces.response.PredictFeignResponse;
@@ -45,6 +43,9 @@ class DefaultMatchServiceTest {
 
     @Mock
     private AchievementsRepository achievementsRepository;
+
+    @Mock
+    private AvatarsRepository avatarsRepository;
 
     private String token;
 
@@ -133,6 +134,7 @@ class DefaultMatchServiceTest {
         Mockito.when(gamerRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(gamer));
         Mockito.when(predictFeignService.predict(Mockito.anyString())).thenReturn(predictFeignResponse);
         Mockito.when(gamerRepository.findById(Mockito.anyString())).thenReturn(Optional.of(gamer));
+        Mockito.when(avatarsRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.of(new Avatars()));
 
         RecommendationResponse result = defaultMatchService.getRecommendations(token);
         assertEquals(2, result.getBody().getData().getRecommendedGamers().size());

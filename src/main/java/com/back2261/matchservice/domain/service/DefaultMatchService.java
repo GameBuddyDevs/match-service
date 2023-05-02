@@ -1,10 +1,8 @@
 package com.back2261.matchservice.domain.service;
 
-import com.back2261.matchservice.infrastructure.entity.Achievements;
-import com.back2261.matchservice.infrastructure.entity.Gamer;
-import com.back2261.matchservice.infrastructure.entity.Games;
-import com.back2261.matchservice.infrastructure.entity.Keywords;
+import com.back2261.matchservice.infrastructure.entity.*;
 import com.back2261.matchservice.infrastructure.repository.AchievementsRepository;
+import com.back2261.matchservice.infrastructure.repository.AvatarsRepository;
 import com.back2261.matchservice.infrastructure.repository.GamerRepository;
 import com.back2261.matchservice.interfaces.dto.GamerDto;
 import com.back2261.matchservice.interfaces.dto.GamesDto;
@@ -36,6 +34,7 @@ public class DefaultMatchService implements MatchService {
     private final JwtService jwtService;
     private final GamerRepository gamerRepository;
     private final AchievementsRepository achievementsRepository;
+    private final AvatarsRepository avatarsRepository;
     private final NotificationService notificationService;
 
     @Override
@@ -65,6 +64,11 @@ public class DefaultMatchService implements MatchService {
             gamerDto.setFavoriteGames(favoriteGames);
             List<String> keywords = mapKeywords(recGamer.getKeywords());
             gamerDto.setSelectedKeywords(keywords);
+            String avatar = avatarsRepository
+                    .findById(recGamer.getAvatar())
+                    .orElse(new Avatars())
+                    .getImage();
+            gamerDto.setAvatar(avatar);
             recommendedGamersDto.add(gamerDto);
         }
 
