@@ -8,6 +8,8 @@ public interface MatchService {
 
     RecommendationResponse getRecommendations(String token);
 
+    RecommendationResponse getSelectedGameRecommendations(String token, String gameId);
+
     DefaultMessageResponse acceptGamer(String token, GamerRequest gamerRequest);
 
     DefaultMessageResponse declineGamer(String token, GamerRequest gamerRequest);
