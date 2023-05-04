@@ -1,5 +1,8 @@
 package com.back2261.matchservice.config;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -8,9 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoClientFactoryBean;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 @Configuration
 public class MongoConfig {
