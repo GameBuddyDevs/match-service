@@ -46,14 +46,14 @@ public class ChatController {
                 new ChatNotification(saved.getId(), saved.getSender(), saved.getSenderName()));
     }
 
-    @GetMapping("/get/messages/{friendId}")
+    @GetMapping("/messages/get/{friendId}")
     public ResponseEntity<ConversationResponse> findChatMessages(
             @Valid @RequestHeader(AUTHORIZATION) @NotBlank(message = AUTH_MESSAGE) String token,
             @Valid @PathVariable String friendId) {
         return new ResponseEntity<>(chatMessageService.findChatMessages(token.substring(7), friendId), HttpStatus.OK);
     }
 
-    @GetMapping("/get/inbox")
+    @GetMapping("/messages/get/inbox")
     public ResponseEntity<InboxResponse> findInbox(
             @Valid @RequestHeader(AUTHORIZATION) @NotBlank(message = AUTH_MESSAGE) String token) {
         return new ResponseEntity<>(chatMessageService.findInbox(token.substring(7)), HttpStatus.OK);
