@@ -19,6 +19,8 @@ import io.github.GameBuddyDevs.backendlibrary.base.BaseBody;
 import io.github.GameBuddyDevs.backendlibrary.base.Status;
 import io.github.GameBuddyDevs.backendlibrary.enums.TransactionCode;
 import io.github.GameBuddyDevs.backendlibrary.exception.BusinessException;
+import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageBody;
+import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageResponse;
 import io.github.GameBuddyDevs.backendlibrary.service.JwtService;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +123,26 @@ public class ChatMessageService {
         inboxResponse.setBody(new BaseBody<>(body));
         inboxResponse.setStatus(new Status(TransactionCode.DEFAULT_100));
         return inboxResponse;
+    }
+
+    public DefaultMessageResponse reportMessage(String token, String messageId) {
+        Gamer gamer = extractGamer(token);
+        Message message = messageRepository
+                .findById(messageId)
+                .orElseThrow(() -> new BusinessException(TransactionCode.DB_ERROR));
+        if (message.getReceiver().equals(gamer.getUserId())) {
+            message.setIsReported(true);
+            message.setMessageBody("*********");
+            messageRepository.save(message);
+        } else {
+            throw new BusinessException(TransactionCode.DB_ERROR);
+        }
+
+        DefaultMessageResponse response = new DefaultMessageResponse();
+        DefaultMessageBody body = new DefaultMessageBody("Message reported successfully");
+        response.setBody(new BaseBody<>(body));
+        response.setStatus(new Status(TransactionCode.DEFAULT_100));
+        return response;
     }
 
     private long countNewMessages(String senderId, String friendId) {

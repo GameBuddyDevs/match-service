@@ -6,6 +6,7 @@ import com.back2261.matchservice.infrastructure.entity.ChatNotification;
 import com.back2261.matchservice.infrastructure.entity.Message;
 import com.back2261.matchservice.interfaces.response.ConversationResponse;
 import com.back2261.matchservice.interfaces.response.InboxResponse;
+import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
@@ -57,5 +59,12 @@ public class ChatController {
     public ResponseEntity<InboxResponse> findInbox(
             @Valid @RequestHeader(AUTHORIZATION) @NotBlank(message = AUTH_MESSAGE) String token) {
         return new ResponseEntity<>(chatMessageService.findInbox(token.substring(7)), HttpStatus.OK);
+    }
+
+    @PostMapping("/messages/report/{messageId}")
+    public ResponseEntity<DefaultMessageResponse> reportMessage(
+            @Valid @RequestHeader(AUTHORIZATION) @NotBlank(message = AUTH_MESSAGE) String token,
+            @Valid @PathVariable String messageId) {
+        return new ResponseEntity<>(chatMessageService.reportMessage(token.substring(7), messageId), HttpStatus.OK);
     }
 }
