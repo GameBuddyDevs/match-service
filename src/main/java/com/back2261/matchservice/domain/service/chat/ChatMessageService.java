@@ -80,6 +80,7 @@ public class ChatMessageService {
             ConversationDto conversationDto = new ConversationDto();
             BeanUtils.copyProperties(message, conversationDto);
             conversationDto.setMessage(message.getMessageBody());
+            conversationDto.setDate(Date.from(Instant.parse(message.getDate())));
             conversationDtoList.add(conversationDto);
         }
 
