@@ -45,7 +45,7 @@ public class ChatController {
         messagingTemplate.convertAndSendToUser(
                 message.getReceiver(),
                 "/queue/messages",
-                new ChatNotification(saved.getId(), saved.getSender(), saved.getSenderName()));
+                new ChatNotification(saved.getId(), saved.getSender(), saved.getSenderName(), saved.getMessage()));
     }
 
     @GetMapping("/messages/get/{friendId}")
