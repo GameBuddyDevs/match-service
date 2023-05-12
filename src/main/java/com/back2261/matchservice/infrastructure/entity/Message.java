@@ -2,7 +2,6 @@ package com.back2261.matchservice.infrastructure.entity;
 
 import com.back2261.matchservice.util.MessageStatus;
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,7 +19,7 @@ public class Message implements Serializable {
     private String senderName;
     private String receiverName;
     private String messageBody;
-    private Date date;
+    private String date;
     private MessageStatus status;
     private Boolean isReported = false;
 }
