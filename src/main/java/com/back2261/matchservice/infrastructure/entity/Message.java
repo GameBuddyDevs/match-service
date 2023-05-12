@@ -18,7 +18,7 @@ public class Message implements Serializable {
     private String receiver;
     private String senderName;
     private String receiverName;
-    private String messageBody;
+    private String message;
     private String date;
     private MessageStatus status;
     private Boolean isReported = false;

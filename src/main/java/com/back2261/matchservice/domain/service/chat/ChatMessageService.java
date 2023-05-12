@@ -79,7 +79,6 @@ public class ChatMessageService {
         for (Message message : messages) {
             ConversationDto conversationDto = new ConversationDto();
             BeanUtils.copyProperties(message, conversationDto);
-            conversationDto.setMessage(message.getMessageBody());
             conversationDto.setDate(Date.from(Instant.parse(message.getDate())));
             conversationDtoList.add(conversationDto);
         }
@@ -111,7 +110,7 @@ public class ChatMessageService {
             inboxDto.setUsername(friend.getGamerUsername());
             inboxDto.setUserId(friend.getUserId());
             inboxDto.setLastMessageTime(Date.from(Instant.parse(lastMessage.getDate())));
-            inboxDto.setLastMessage(lastMessage.getMessageBody());
+            inboxDto.setLastMessage(lastMessage.getMessage());
             inboxDto.setUnreadCount(countNewMessages(friend.getUserId(), gamer.getUserId()));
             inboxDtoList.add(inboxDto);
         });
@@ -131,7 +130,7 @@ public class ChatMessageService {
                 .orElseThrow(() -> new BusinessException(TransactionCode.DB_ERROR));
         if (message.getReceiver().equals(gamer.getUserId())) {
             message.setIsReported(true);
-            message.setMessageBody("*********");
+            message.setMessage("*********");
             messageRepository.save(message);
         } else {
             throw new BusinessException(TransactionCode.DB_ERROR);
