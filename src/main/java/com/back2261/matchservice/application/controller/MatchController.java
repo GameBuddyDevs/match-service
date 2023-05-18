@@ -35,14 +35,14 @@ public class MatchController {
                 matchService.getSelectedGameRecommendations(token.substring(7), gameId), HttpStatus.OK);
     }
 
-    @PostMapping("/accept/match")
+    @PostMapping("/accept")
     public ResponseEntity<DefaultMessageResponse> acceptMatch(
             @Valid @RequestHeader(AUTHORIZATION) @NotBlank(message = AUTH_MESSAGE) String token,
             @Valid @RequestBody GamerRequest gamerRequest) {
         return new ResponseEntity<>(matchService.acceptGamer(token.substring(7), gamerRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/decline/match")
+    @PostMapping("/decline")
     public ResponseEntity<DefaultMessageResponse> declineMatch(
             @Valid @RequestHeader(AUTHORIZATION) @NotBlank(message = AUTH_MESSAGE) String token,
             @Valid @RequestBody GamerRequest gamerRequest) {

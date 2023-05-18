@@ -87,13 +87,41 @@ class MatchControllerTest {
     }
 
     @Test
+    void testGetSelectedGameRecommendations_whenValidTokenAndGameIdProvided_shouldReturnRecommendedUsers()
+            throws Exception {
+        RecommendationResponse recommendationResponse = new RecommendationResponse();
+        RecommendationResponseBody body = new RecommendationResponseBody();
+        List<GamerDto> recommendedGamers = new ArrayList<>();
+        recommendedGamers.add(new GamerDto());
+        body.setRecommendedGamers(recommendedGamers);
+        recommendationResponse.setBody(new BaseBody<>(body));
+        recommendationResponse.setStatus(new Status(TransactionCode.DEFAULT_100));
+
+        Mockito.when(defaultMatchService.getSelectedGameRecommendations(Mockito.anyString(), Mockito.anyString()))
+                .thenReturn(recommendationResponse);
+
+        var request = MockMvcRequestBuilders.get("/match/get/selected/game/test")
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + token);
+        var response = mockMvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+        String responseJson = response.getResponse().getContentAsString();
+
+        RecommendationResponse responseObj = objectMapper.readValue(responseJson, RecommendationResponse.class);
+        assertEquals(200, response.getResponse().getStatus());
+        assertEquals(1, responseObj.getBody().getData().getRecommendedGamers().size());
+    }
+
+    @Test
     void testAcceptMatch_whenValidRequestProvided_shouldReturnSuccessMessage() throws Exception {
         GamerRequest gamerRequest = new GamerRequest();
         gamerRequest.setUserId("test");
 
         Mockito.when(defaultMatchService.acceptGamer(token, gamerRequest)).thenReturn(defaultMessageResponse);
 
-        var request = MockMvcRequestBuilders.post("/match/accept/match")
+        var request = MockMvcRequestBuilders.post("/match/accept")
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(gamerRequest));
@@ -112,7 +140,7 @@ class MatchControllerTest {
 
         Mockito.when(defaultMatchService.declineGamer(token, gamerRequest)).thenReturn(defaultMessageResponse);
 
-        var request = MockMvcRequestBuilders.post("/match/decline/match")
+        var request = MockMvcRequestBuilders.post("/match/decline")
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(gamerRequest));

@@ -14,7 +14,6 @@ import com.back2261.matchservice.interfaces.dto.InboxDto;
 import com.back2261.matchservice.interfaces.dto.InboxResponseBody;
 import com.back2261.matchservice.interfaces.response.ConversationResponse;
 import com.back2261.matchservice.interfaces.response.InboxResponse;
-import com.back2261.matchservice.util.MessageStatus;
 import io.github.GameBuddyDevs.backendlibrary.base.BaseBody;
 import io.github.GameBuddyDevs.backendlibrary.base.Status;
 import io.github.GameBuddyDevs.backendlibrary.enums.TransactionCode;
@@ -22,6 +21,7 @@ import io.github.GameBuddyDevs.backendlibrary.exception.BusinessException;
 import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageBody;
 import io.github.GameBuddyDevs.backendlibrary.interfaces.DefaultMessageResponse;
 import io.github.GameBuddyDevs.backendlibrary.service.JwtService;
+import io.github.GameBuddyDevs.backendlibrary.util.MessageStatus;
 import java.time.Instant;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -127,13 +127,13 @@ public class ChatMessageService {
         Gamer gamer = extractGamer(token);
         Message message = messageRepository
                 .findById(messageId)
-                .orElseThrow(() -> new BusinessException(TransactionCode.DB_ERROR));
+                .orElseThrow(() -> new BusinessException(TransactionCode.MESSAGE_NOT_FOUND));
         if (message.getReceiver().equals(gamer.getUserId())) {
             message.setIsReported(true);
             message.setMessage("*********");
             messageRepository.save(message);
         } else {
-            throw new BusinessException(TransactionCode.DB_ERROR);
+            throw new BusinessException(TransactionCode.RECEIVER_IS_DIFFERENT);
         }
 
         DefaultMessageResponse response = new DefaultMessageResponse();

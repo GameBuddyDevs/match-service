@@ -1,6 +1,6 @@
 package com.back2261.matchservice.infrastructure.entity;
 
-import com.back2261.matchservice.util.MessageStatus;
+import io.github.GameBuddyDevs.backendlibrary.util.MessageStatus;
 import java.io.Serializable;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
