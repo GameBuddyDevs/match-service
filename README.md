@@ -137,3 +137,7 @@ To containerize the GameBuddy Match Service using Docker, follow the steps below
  `docker run -d -p 4567:4567 --name gamebuddy-match gamebuddy-match-service`
 
  This will start the GameBuddy Match Service container, and it will be accessible at http://localhost:4567.
+
+ 
+## LICENSE
+This project is licensed under the MIT License.
